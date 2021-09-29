@@ -51,7 +51,7 @@ class BinSearTree{
 //delete function for leaf node
 void BinSearTree::delLeaf(NODE*parent,NODE*current)
 {  
-	if(parent==nullptr)//root is onlt element presenet
+	if(parent==nullptr)//root is only element presenet
 	  {
 	    root=nullptr;
 	     cout<<"element\t"<<current->data<<"\t is deleted"<<endl;
@@ -74,25 +74,45 @@ void BinSearTree::delLeaf(NODE*parent,NODE*current)
 }
 //delete function for leaf node
 void BinSearTree::delOneChild(NODE*parent,NODE*current)
-{   
-     
+{ 
+  
      NODE*childptr;
 	//we will take a reference to the child of node to be deleted it can be either left or right child
 	if(current->lthread==false)//means node to be deleted has only left child
-	   childptr=current->lchild;
-	   
-	else childptr=current->rchild;
+	   {
+	   	
+	   	childptr=current->lchild;
 	
+	   }
+	   
+	else {
+	        childptr=current->rchild;
+      	   }    
 	//if the node to be deleted is root node then we will make its child as node
+    
 	   if(parent==nullptr)
 	     {
+	       if(current->lchild!=nullptr)
+	       //find predecessor of current and put its rchild as null
+	       {
+	       	NODE*setprede=inorderPredecessor(current);
+	       	setprede->rchild=nullptr;
+		   }
+	       else{
+	             NODE*setsucc=inorderSuccessor(current);
+	        	setsucc->lchild=nullptr;
+		   	
+		   }
 	     	root=childptr;
-	    }
+	        delete current;
+				return;
+       
+	     }
      //getting inorder predecessor and inorder successor of node to be deleted
 	   NODE*inorderPre=inorderPredecessor(current);
-    
+        cout<<"predecessor of current is\t"<<inorderPre->data<<endl;
 	   NODE*inorderSuc=inorderSuccessor(current);
-	   
+	   cout<<"successor of current is\t"<<inorderSuc->data<<endl;
 	    
     //if node to be deleted is left child of its parent then its parent will point to its child
        if(current==parent->lchild)
@@ -431,19 +451,23 @@ LIST* BinSearTree::reverseInorder()
   	  NODE*parent=nullptr;
   	//throw exception if root is null
 	  if(current==nullptr)
-	     throw "tree is empty";  
-	      
+	     {
+		 cout<< "tree is empty"<<endl;
+		 return;  
+	     }
 	
 	 while(current!=nullptr)
   	  {
   	  	if(key==current->data)
   	  	{ 
-  	  	   cout<<"NODE to be deleted is:"<<"\t"<<current->data<<endl;
+  	  	   cout<<"NODE to be deleted is:\t"<<current->data<<endl;
   	  		break;
 			}
-			 parent =current;
+		else
+		{
+		   parent =current;
 		
-		 if(key<current->data)
+		   if(key<current->data)
 			  { 
 			     if(current->lthread==false)
 			  	{
@@ -467,6 +491,7 @@ LIST* BinSearTree::reverseInorder()
 				        throw "key not found to be deleted";
 					
 		     }
+		 }
 		}//end while
 
      //if we want to delete leaf
